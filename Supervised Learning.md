@@ -1,3 +1,84 @@
+- [Recall: Linear Regression](#recall--linear-regression)
+    + [Hypothesis:](#hypothesis-)
+    + [Cost Function](#cost-function)
+- [Multidimensional Inputs](#multidimensional-inputs)
+    + [Notation](#notation)
+- [Multivariate Linear Regression](#multivariate-linear-regression)
+    + [Hypothesis](#hypothesis)
+    + [Cost Function](#cost-function-1)
+    + [Goal](#goal)
+  * [How? Two potential solutions](#how--two-potential-solutions)
+    + [Gradient descent (or other iterative algorithm)](#gradient-descent--or-other-iterative-algorithm-)
+    + [Direct minimization](#direct-minimization)
+- [Indirect Solution for Linear Regression](#indirect-solution-for-linear-regression)
+  * [Gradient Descent Algorithm](#gradient-descent-algorithm)
+  * [Gradient Descent: Intuition](#gradient-descent--intuition)
+  * [2-dimensional parameters](#2-dimensional-parameters)
+  * [Gradient Descent for Least Squares Cost](#gradient-descent-for-least-squares-cost)
+- [Feature Normalization](#feature-normalization)
+- [Direct Solution for Linear Regression](#direct-solution-for-linear-regression)
+    + [Want to minimize SSD](#want-to-minimize-ssd)
+    + [Find minima of function](#find-minima-of-function)
+- [Direct solution](#direct-solution)
+    + [Re-write SSD using vector matrix notation](#re-write-ssd-using-vector-matrix-notation)
+    + [where](#where)
+    + [Solution: Normal Equation](#solution--normal-equation)
+- [Derivation of Normal Equations](#derivation-of-normal-equations)
+    + [SSE in matrix form](#sse-in-matrix-form)
+    + [Take gradient with respect to $\theta$ (vector), set to 0](#take-gradient-with-respect-to---theta---vector---set-to-0)
+- [Trade-offs](#trade-offs)
+  * [Gradient Descent](#gradient-descent)
+  * [Normal Equations](#normal-equations)
+- [Maximum Likelihood Principle (ML)](#maximum-likelihood-principle--ml-)
+  * [So far, we have treated outputs as noiseless](#so-far--we-have-treated-outputs-as-noiseless)
+  * [How to model uncertainty in data?](#how-to-model-uncertainty-in-data-)
+    + [Hypothesis](#hypothesis-1)
+    + [New cost function](#new-cost-function)
+  * [Recall: Cost Function](#recall--cost-function)
+  * [Alternative view: Maximum Likelihood](#alternative-view--maximum-likelihood)
+  * [Maximum Likelihood: Coin Toss Example](#maximum-likelihood--coin-toss-example)
+  * [Maximum Likelihood: Normal Distribution Example](#maximum-likelihood--normal-distribution-example)
+  * [Maximum likelihood way of estimating model parameters $\theta$](#maximum-likelihood-way-of-estimating-model-parameters---theta-)
+    + [i.i.d. Observations](#iid-observations)
+- [Maximum Likelihood for Linear Regression](#maximum-likelihood-for-linear-regression)
+  * [Recall: linear regression](#recall--linear-regression)
+    + [Probability of of one data point {$x,t$}](#probability-of-of-one-data-point---x-t--)
+    + [Max. likelihood solution](#max-likelihood-solution)
+    + [Want to maximize](#want-to-maximize)
+    + [Easier to maximize log()](#easier-to-maximize-log--)
+    + [Want to *maximize* w.r.t. $\theta$](#want-to--maximize--wrt---theta-)
+    + [But this is same as *minimizing* sum-of-squares cost](#but-this-is-same-as--minimizing--sum-of-squares-cost)
+    + [Which is the same as our SSE cost from before!!](#which-is-the-same-as-our-sse-cost-from-before--)
+- [Probabilistic Motivation for SSE](#probabilistic-motivation-for-sse)
+- [Why is $\beta$ useful for?](#why-is---beta--useful-for-)
+- [Predictive Distribution](#predictive-distribution)
+- [Non-linear Features](#non-linear-features)
+    + [Example](#example)
+  * [Non-linear Basis Functions](#non-linear-basis-functions)
+- [Polynomial basis functions](#polynomial-basis-functions)
+- [Classification](#classification)
+  * [What to do if data is nonlinear?](#what-to-do-if-data-is-nonlinear-)
+    + [Example](#example-1)
+      - [Transform the input/feature](#transform-the-input-feature)
+      - [Transformed training data: linearly separable!](#transformed-training-data--linearly-separable-)
+    + [Another Example](#another-example)
+      - [How to transform the input/feature?](#how-to-transform-the-input-feature-)
+      - [Transformed training data: linearly separable](#transformed-training-data--linearly-separable)
+  * [Decision Boundary](#decision-boundary)
+      - [Non-linear decision boundaries](#non-linear-decision-boundaries)
+- [Overfitting](#overfitting)
+  * [Detecting overfitting](#detecting-overfitting)
+  * [Solution: Regularization](#solution--regularization)
+  * [Regularized gradient descent for Linear Regression](#regularized-gradient-descent-for-linear-regression)
+  * [Regularized Normal Equation](#regularized-normal-equation)
+- [Regularized Logistic Regression](#regularized-logistic-regression)
+- [Model Selection](#model-selection)
+  * [Train/Validation/Test Sets](#train-validation-test-sets)
+  * [Hyperparameter Selection](#hyperparameter-selection)
+  * [N-Fold Cross Validation](#n-fold-cross-validation)
+- [Bias-Variance](#bias-variance)
+  * [Bias vs Variance](#bias-vs-variance)
+
 # Recall: Linear Regression
 ### Hypothesis:
 $h_\theta(x)=\theta_0+\theta_1x$
@@ -234,7 +315,9 @@ $$\phi(x):x\in R^N \rightarrow z\in R^M$$
 ## What to do if data is nonlinear?
 ### Example
 #### Transform the input/feature
-$$\phi(x):x\in\mathbb{R}^2\to z=x_1 \cdot x_2$$
+![300](attatchments/Pasted%20image%2020221023204806.png)
+$\phi(x):x\in\mathbb{R}^2\to z=x_1 \cdot x_2$
+
 #### Transformed training data: linearly separable!
 ![Pasted image 20221023131531.png|600](./attatchments/Pasted%20image%2020221023131531.png)
 
@@ -244,23 +327,19 @@ $$\phi(x):x\in\mathbb{R}^2\to z=x_1 \cdot x_2$$
 $\phi(x):x\mathbb{R}^2\to z=\begin{bmatrix}x^2\\x_1\cdot x_2\\x_2^2\end{bmatrix}$
 
 #### Transformed training data: linearly separable
-$y\in \{0,1\}$
-0: "Negative Class" (e.g., benign tumor)
-1: "Positive Class" (e.g., malignant tumor)
+**Intuition**: suppose $\theta=\begin{bmatrix}1\\0\\1\end{bmatrix}$
+Then $\theta^Tz=x_1^2+x^2_2$
+i.e., the sq. distance to the origin!
 
-![Pasted image 20221022200916.png|600](./attatchments/Pasted%20image%2020221022200916.png)
+## Decision Boundary
+![200](attatchments/Pasted%20image%2020221023205426.png)
+$h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_1x_2)$
+Predict "$y=1$" if $-4+x_1+x_2\geq0$
 
-Why not use least squares regression?
-$$argmin\frac{1}{2m}\sum^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2$$
-- Indeed, this is possible!
-	- Predict 1 if $h_\theta(x)>.5, 0$ otherwise
-- 
-
- # Things to learn
-- Partial Derivatives
-- ML & MLE
-- Gradients & Descent
-- Convolution
+#### Non-linear decision boundaries
+![200](attatchments/Pasted%20image%2020221023205538.png)
+$h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2+\theta_3x^2_1+\theta_4x^2_2)$
+Predict "$y=1$" if $-1+x^2_1+x^2_2\geq0$
 
 # Overfitting
 ![Pasted image 20221022200159.png|600](./attatchments/Pasted%20image%2020221022200159.png)
@@ -268,7 +347,7 @@ $$argmin\frac{1}{2m}\sum^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2$$
 A disaster in overfitting:
 ![Pasted image 20221022200245.png|600](./attatchments/Pasted%20image%2020221022200245.png)
 
-# Detecting overfitting
+## Detecting overfitting
 **Plot model complexity versus objective function on test/train data**
 
 As model becomes more complex, performance on training keeps improving while on test data it gets worse
@@ -279,8 +358,61 @@ As model becomes more complex, performance on training keeps improving while on 
 
 **Vertical axis:** For regression, it would be SSE or mean SE (MSE). For classification, the vertical axis would be classification error rate or cross-entropy error function.
 
-# Overcoming overfitting
-- Basic ideas
-	- Use more training data
-		  ![Pasted image 20221022200608.png|400](./attatchments/Pasted%20image%2020221022200608.png)
-	- 
+## Solution: Regularization
+Use regularization:
+- penalize large $\theta$. How?
+- add $\lambda||x||_2^2$ term to SSE cost function
+- “L-2” norm squared, ie sum of sq. elements $\sum\theta^2_j$
+- $\lambda$ controls amount of regularization
+$$J(\theta)=\frac{1}{2m}\bigg{[}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})^2+\lambda\sum_{j=1}^n\theta^2_j\bigg{]}$$
+## Regularized gradient descent for Linear Regression
+![600](attatchments/Pasted%20image%2020221023210506.png)
+
+## Regularized Normal Equation
+![600](attatchments/Pasted%20image%2020221023210536.png)
+
+# Regularized Logistic Regression
+![600](attatchments/Pasted%20image%2020221023210618.png)
+
+# Model Selection
+![200](attatchments/Pasted%20image%2020221023210820.png)
+Problem with the model above: **Overfitting!**
+
+- fit parameters $(\theta_0,\theta_1,...,\theta_4)$ to some set of data (training set)
+- how to choose regularization weight $\lambda$ and/or number of features? **“hyperparameters”**
+- this is called **model selection**
+- choose the model with the lowest error on the training data $J(\theta)$?
+
+## Train/Validation/Test Sets
+Solution: split data into three sets.
+
+![200](attatchments/Pasted%20image%2020221023211219.png)
+
+- For each value of a hyperparameter, **train** on the train set, evaluate learned parameters on the **validation** set to get $J_{VAL}$.
+- Pick the model with the hyperparameter that achieved the lowest validation error $J_{VAL}$.
+- Report this model’s **test** set error.
+
+## Hyperparameter Selection
+![600](attatchments/Pasted%20image%2020221023211321.png)
+
+## N-Fold Cross Validation
+- What is we don’t have enough data for train/test/validation sets?
+- Solution: use N-fold cross validation.
+- Split training set into train/validation sets N times
+- Report average predictions over N val sets, e.g. N=10:
+![600](attatchments/Pasted%20image%2020221023211405.png)
+
+# Bias-Variance
+## Bias vs Variance
+![600](attatchments/Pasted%20image%2020221023211447.png)
+
+Suppose your learning algorithm is performing less well than you were hoping. ($J_{cv}(\theta)$ or $J_{test}(\theta)$ is high.) Two likely causes: a high **bias** problem or a high **variance** problem.
+
+![600](attatchments/Pasted%20image%2020221023211606.png)
+![600](attatchments/Pasted%20image%2020221023211630.png)
+![600](attatchments/Pasted%20image%2020221023211643.png)
+
+- Understanding how different sources of error lead to bias and variance helps us improve model fitting
+- Imagine you could repeat the whole model fitting process on many datasets
+- Error due to Bias: The error due to bias is taken as the difference between the expected (or average) prediction of our model and the correct value which we are trying to predict
+- Error due to Variance: The variance is how much the predictions for a given point vary between different realizations of the model.
