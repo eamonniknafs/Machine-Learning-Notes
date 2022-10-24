@@ -1,71 +1,42 @@
-- [Recall: Linear Regression](#recall--linear-regression)
-    + [Hypothesis:](#hypothesis-)
-    + [Cost Function](#cost-function)
-- [Multidimensional Inputs](#multidimensional-inputs)
-    + [Notation](#notation)
 - [Multivariate Linear Regression](#multivariate-linear-regression)
-    + [Hypothesis](#hypothesis)
-    + [Cost Function](#cost-function-1)
-    + [Goal](#goal)
-  * [How? Two potential solutions](#how--two-potential-solutions)
-    + [Gradient descent (or other iterative algorithm)](#gradient-descent--or-other-iterative-algorithm-)
-    + [Direct minimization](#direct-minimization)
+  * [Recall: Linear Regression](#recall--linear-regression)
+  * [Multidimensional Inputs](#multidimensional-inputs)
 - [Indirect Solution for Linear Regression](#indirect-solution-for-linear-regression)
   * [Gradient Descent Algorithm](#gradient-descent-algorithm)
   * [Gradient Descent: Intuition](#gradient-descent--intuition)
   * [2-dimensional parameters](#2-dimensional-parameters)
   * [Gradient Descent for Least Squares Cost](#gradient-descent-for-least-squares-cost)
-- [Feature Normalization](#feature-normalization)
+  * [Feature Normalization](#feature-normalization)
 - [Direct Solution for Linear Regression](#direct-solution-for-linear-regression)
-    + [Want to minimize SSD](#want-to-minimize-ssd)
-    + [Find minima of function](#find-minima-of-function)
-- [Direct solution](#direct-solution)
-    + [Re-write SSD using vector matrix notation](#re-write-ssd-using-vector-matrix-notation)
-    + [where](#where)
-    + [Solution: Normal Equation](#solution--normal-equation)
-- [Derivation of Normal Equations](#derivation-of-normal-equations)
-    + [SSE in matrix form](#sse-in-matrix-form)
-    + [Take gradient with respect to $\theta$ (vector), set to 0](#take-gradient-with-respect-to---theta---vector---set-to-0)
-- [Trade-offs](#trade-offs)
+  * [Direct solution](#direct-solution)
+  * [Derivation of Normal Equations](#derivation-of-normal-equations)
+  * [Trade-offs](#trade-offs)
   * [Gradient Descent](#gradient-descent)
   * [Normal Equations](#normal-equations)
 - [Maximum Likelihood Principle (ML)](#maximum-likelihood-principle--ml-)
   * [So far, we have treated outputs as noiseless](#so-far--we-have-treated-outputs-as-noiseless)
   * [How to model uncertainty in data?](#how-to-model-uncertainty-in-data-)
-    + [Hypothesis](#hypothesis-1)
-    + [New cost function](#new-cost-function)
   * [Recall: Cost Function](#recall--cost-function)
   * [Alternative view: Maximum Likelihood](#alternative-view--maximum-likelihood)
   * [Maximum Likelihood: Coin Toss Example](#maximum-likelihood--coin-toss-example)
   * [Maximum Likelihood: Normal Distribution Example](#maximum-likelihood--normal-distribution-example)
   * [Maximum likelihood way of estimating model parameters $\theta$](#maximum-likelihood-way-of-estimating-model-parameters---theta-)
-    + [i.i.d. Observations](#iid-observations)
 - [Maximum Likelihood for Linear Regression](#maximum-likelihood-for-linear-regression)
   * [Recall: linear regression](#recall--linear-regression)
-    + [Probability of of one data point {$x,t$}](#probability-of-of-one-data-point---x-t--)
-    + [Max. likelihood solution](#max-likelihood-solution)
-    + [Want to maximize](#want-to-maximize)
-    + [Easier to maximize log()](#easier-to-maximize-log--)
-    + [Want to *maximize* w.r.t. $\theta$](#want-to--maximize--wrt---theta-)
-    + [But this is same as *minimizing* sum-of-squares cost](#but-this-is-same-as--minimizing--sum-of-squares-cost)
-    + [Which is the same as our SSE cost from before!!](#which-is-the-same-as-our-sse-cost-from-before--)
-- [Probabilistic Motivation for SSE](#probabilistic-motivation-for-sse)
-- [Why is $\beta$ useful for?](#why-is---beta--useful-for-)
-- [Predictive Distribution](#predictive-distribution)
+  * [Probabilistic Motivation for SSE](#probabilistic-motivation-for-sse)
+  * [Why is $\beta$ useful for?](#why-is---beta--useful-for-)
+  * [Predictive Distribution](#predictive-distribution)
 - [Non-linear Features](#non-linear-features)
-    + [Example](#example)
   * [Non-linear Basis Functions](#non-linear-basis-functions)
-- [Polynomial basis functions](#polynomial-basis-functions)
+  * [Polynomial basis functions](#polynomial-basis-functions)
 - [Classification](#classification)
   * [What to do if data is nonlinear?](#what-to-do-if-data-is-nonlinear-)
-    + [Example](#example-1)
-      - [Transform the input/feature](#transform-the-input-feature)
-      - [Transformed training data: linearly separable!](#transformed-training-data--linearly-separable-)
-    + [Another Example](#another-example)
-      - [How to transform the input/feature?](#how-to-transform-the-input-feature-)
-      - [Transformed training data: linearly separable](#transformed-training-data--linearly-separable)
   * [Decision Boundary](#decision-boundary)
-      - [Non-linear decision boundaries](#non-linear-decision-boundaries)
+  * [Least squares vs. Logistic Regression for Classification](#least-squares-vs-logistic-regression-for-classification)
+  * [Logistic Regression](#logistic-regression)
+  * [Cross Entropy Cost](#cross-entropy-cost)
+  * [Gradient of Cross Entropy Cost](#gradient-of-cross-entropy-cost)
+  * [Maximum Likelihood Derivation of](#maximum-likelihood-derivation-of)
 - [Overfitting](#overfitting)
   * [Detecting overfitting](#detecting-overfitting)
   * [Solution: Regularization](#solution--regularization)
@@ -79,7 +50,9 @@
 - [Bias-Variance](#bias-variance)
   * [Bias vs Variance](#bias-vs-variance)
 
-# Recall: Linear Regression
+# Multivariate Linear Regression
+
+## Recall: Linear Regression
 ### Hypothesis:
 $h_\theta(x)=\theta_0+\theta_1x$
 $\theta_i$'s: Parameters
@@ -89,33 +62,32 @@ $$J(\theta_0,\theta_1)=\frac{1}{2m}\sum^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2$$
 SSD = sum of squared differences, also known as
 SSE = sum of squared errors
 
-# Multidimensional Inputs
+## Multidimensional Inputs
 ![Pasted image 20221018150715.png|600](./attatchments/Pasted%20image%2020221018150715.png)
-### Notation
+#### Notation
 $n$ = number of features
 $x^{(i)}$ = input (features) of $i^{th}$ training example.
 $x_j^{(i)}$ = value of feature $j$ in $i^{th}$ training example.
 
-# Multivariate Linear Regression
-### Hypothesis
+#### Hypothesis
 $h_\theta(x)=\theta_0+\theta_1x_1+\theta_2x_2+...+\theta_nx_n$
 For convenience of notation, define $x_0=1$
 $\theta_i$: Parameters
 
-### Cost Function
+#### Cost Function
 $$J(\theta_0,\theta_1,...,\theta_n)=\frac{1}{2m}\sum^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2$$
-### Goal
+#### Goal
  $\underset{\theta_0,\theta_1,...,\theta_n}{minimize}\;J(\theta_0,\theta_1,...,\theta_n)$
 
-## How? Two potential solutions
+### How? Two potential solutions
 $\underset{\theta}{min}\;J(\theta;x^{(1)},y^{(1)},...,^{(m)},y^{(m)})$
 
-### Gradient descent (or other iterative algorithm)
+#### Gradient descent (or other iterative algorithm)
 - Start with a guess for θ
 - Change θ to decrease JJ(θ)
 - Until reach minimum
 
-### Direct minimization
+#### Direct minimization
 - Take derivative, set to zero
 - Sufficient condition for minima
 - Not possible for most “interesting” cost functions
@@ -137,7 +109,7 @@ $\theta_j:=\theta_j-\alpha\frac{\delta}{\delta\theta_j}J(\theta)$ simultaneously
 ![Pasted image 20221021192115.png|600](./attatchments/Pasted%20image%2020221021192115.png)
 Gradient descent computational complexity is intuitively $O(mn)$.
 
-# Feature Normalization
+## Feature Normalization
 - If features have very different scale, GD can get “stuck” since $x_j$ affects size of gradient in the direction of $j^{th}$ dimension
 - Normalizing features to be zero-mean ($\mu$) and same-variance ($\sigma$) helps gradient descent converge faster
 
@@ -153,7 +125,7 @@ $\frac{\delta}{\delta\theta_j}J(\theta)=...=0$ (for every $j$)
 Solve for $\theta_0,\theta_1,...,\theta_n$
 ![Pasted image 20221022151635.png|200](./attatchments/Pasted%20image%2020221022151635.png)
 
-# Direct solution
+## Direct solution
 ### Re-write SSD using vector matrix notation
 $$J(\theta_0,\theta_1,...,\theta_n)=\frac{1}{2m}\sum^m_{i=1}(h_\theta(x^{(i)})-y^{(i)})^2$$
 $$=\frac{1}{2m}(X\theta-y)^T(X\theta-y)$$
@@ -175,7 +147,7 @@ $$
 ### Solution: Normal Equation
 $$\theta = (X^TX)^{-1}X^Ty$$
 
-# Derivation of Normal Equations
+## Derivation of Normal Equations
 ### SSE in matrix form
 $$J(\theta)=\frac{1}{2m}(X\theta-y)^T(X\theta-y)=$$
 $$=\frac{1}{2m}(\theta^T(X^TX)\theta-2(X^Ty)^T\theta+const)$$
@@ -185,7 +157,7 @@ $$\theta=(X^TX)^{-1}X^Ty$$
 
 **Also known as the *least mean squares*, or *least squares* solution**
 ![Pasted image 20221022162452.png|600](./attatchments/Pasted%20image%2020221022162452.png)
-# Trade-offs
+## Trade-offs
 $m$ training examples, $n$ features.
 
 ## Gradient Descent
@@ -252,38 +224,38 @@ Observed output is the true model’s output plus noise $$t^i=h_*(x^i)+\epsilon^
 ![Pasted image 20221022183830.png|600](./attatchments/Pasted%20image%2020221022183830.png)
 $p(t|x,\theta,\beta)=N(t|h(x),\beta^{-1})$
 
-### Probability of of one data point {$x,t$}
+#### Probability of of one data point {$x,t$}
 $p(\boldsymbol{t}|\boldsymbol{x}, \theta, \beta)= \prod^m_{i=1}N(t^{(i)}|h(x^{(i)}),\beta^{-1})$    **Likelihood Function**
 
-### Max. likelihood solution
+#### Max. likelihood solution
 $\theta_{ML}=\underset{\theta}{argmax}\; p(\boldsymbol{t}|\boldsymbol{x}, \theta, \beta)$
 $\beta_{ML}=\underset{\beta}{argmax}\; p(\boldsymbol{t}|\boldsymbol{x}, \theta, \beta)$
 
 ### Want to maximize
 $p(\boldsymbol{t}|\boldsymbol{x}, \theta, \beta)= \prod^m_{i=1}N(t^{(i)}|h(x^{(i)}),\beta^{-1})$
 
-### Easier to maximize log()
+#### Easier to maximize log()
 $$ln\;p(\boldsymbol{t}|\boldsymbol{x}, \theta, \beta)=-\frac{\beta}{2}\sum_{i=1}^m(h(x^{(i)})-t^{(i)})^2+\frac{m}{2}ln\beta-\frac{m}{2}ln(2\pi)$$
-### Want to *maximize* w.r.t. $\theta$
+#### Want to *maximize* w.r.t. $\theta$
 $$ln\;p(\boldsymbol{t}|\boldsymbol{x}, \theta, \beta)=-\frac{\beta}{2}\sum_{i=1}^m(h(x^{(i)})-t^{(i)})^2+\frac{m}{2}ln\beta-\frac{m}{2}ln(2\pi)$$
-### But this is same as *minimizing* sum-of-squares cost
+#### But this is same as *minimizing* sum-of-squares cost
 $$\frac{1}{2m}\sum_{i=1}^m(h(x^{(i)})-t^{(i)})^2$$
 
-### Which is the same as our SSE cost from before!!
+#### Which is the same as our SSE cost from before!!
 $$J(\theta)=\frac{1}{2m}\sum_{i=1}^m(h(x^{(i)})-t^{(i)})^2$$
-# Probabilistic Motivation for SSE
+## Probabilistic Motivation for SSE
 - Under the Gaussian noise assumption, maximizing the probability of the data points is the same as minimizing a sum-of-squares cost function
 - The same as least squares method
 - ML can be used for other hypotheses!
 	- Note that linear regression has a closed-form solution while others may not
 ![Pasted image 20221022194803.png|600](./attatchments/Pasted%20image%2020221022194803.png)
 
-# Why is $\beta$ useful for?
+## Why is $\beta$ useful for?
 - Recall: we assumed observations $t$ are Gaussian given $h(x)$
 - $\beta$ allows us to write down distribution over $t$, given new $x$, called **predictive distribution**
 ![Pasted image 20221022195253.png|400](./attatchments/Pasted%20image%2020221022195253.png)
 
-# Predictive Distribution
+## Predictive Distribution
 Given a new input point $x$, we can now compute a distribution over the output $t$:
 ![79E5AFF7-0F8C-41B3-A7AD-F26AB1714528 copy.jpg|400](79E5AFF7-0F8C-41B3-A7AD-F26AB1714528%20copy.jpg)
 
@@ -306,7 +278,7 @@ $$\phi(x):x\in R^N \rightarrow z\in R^M$$
 - $M$ is the dimensionality of the new features/input $z$ (or $\phi(x)$)
 - Note that $M$ could be $= N, \;>N$ or $<N$
 
-# Polynomial basis functions
+## Polynomial basis functions
 ![Pasted image 20221022200116.png|600](./attatchments/Pasted%20image%2020221022200116.png)
 ![Pasted image 20221022200129.png|600](./attatchments/Pasted%20image%2020221022200129.png)
 
@@ -340,6 +312,31 @@ Predict "$y=1$" if $-4+x_1+x_2\geq0$
 ![200](attatchments/Pasted%20image%2020221023205538.png)
 $h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2+\theta_3x^2_1+\theta_4x^2_2)$
 Predict "$y=1$" if $-1+x^2_1+x^2_2\geq0$
+
+## Least squares vs. Logistic Regression for Classification
+![600](attatchments/Pasted%20image%2020221023212919.png)
+> Figure 4.4 from Bishop. The left plot shows data from two classes, denoted by red crosses and blue circles, together with the decision boundary found by least squares (magenta curve) and also by the logistic regression model (green curve). The right-hand plot shows the corresponding results obtained when extra data points are added at the bottom left of the diagram, showing that least squares is highly sensitive to outliers, unlike logistic regression.
+
+*(see Bishop 4.1.3 for more details)*
+
+## Logistic Regression
+![600](attatchments/Pasted%20image%2020221023213112.png)
+
+### Logistic Regression Cost
+![600](attatchments/Pasted%20image%2020221023213153.png)
+
+## Cross Entropy Cost
+- Cross entropy compares distribution $q$ to reference $p$
+$$H(p,q)=-\sum_xp(x)\;log\;q(x)$$
+- Here q is predicted probability of $y=1$ given $x$, reference distribution is $p=y^{(i)}$, which is either $1$ or $0$
+![600](attatchments/Pasted%20image%2020221023213442.png)
+
+## Gradient of Cross Entropy Cost
+![600](attatchments/Pasted%20image%2020221023213657.png)
+
+## Maximum Likelihood Derivation of
+Logistic Regression Cost
+![600](attatchments/Pasted%20image%2020221023213801.png)
 
 # Overfitting
 ![Pasted image 20221022200159.png|600](./attatchments/Pasted%20image%2020221022200159.png)
